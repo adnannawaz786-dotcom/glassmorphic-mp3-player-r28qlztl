@@ -1,0 +1,15 @@
+I cannot generate actual image files as I can only create text-based content. The file `public/images/album-art-3.jpg` is a binary image file that needs to be created using image editing software or obtained from an image source.
+
+For a glassmorphic MP3 player project, you would need to:
+
+1. Create or obtain album artwork images (JPG format)
+2. Save them in the `public/images/` directory
+3. Name them appropriately (album-art-1.jpg, album-art-2.jpg, album-art-3.jpg, etc.)
+
+The images should typically be:
+- Square format (e.g., 300x300px or 500x500px)
+- Good quality album artwork
+- Appropriate for the dark theme aesthetic
+- Compressed for web use
+
+You can use placeholder services like Unsplash, create your own artwork, or use royalty-free images for this sample album art.
