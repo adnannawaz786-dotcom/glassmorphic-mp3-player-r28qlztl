@@ -5,11 +5,8 @@ import React, { createContext, useContext, useReducer, useRef, useEffect } from 
 const AudioContext = createContext();
 
 const initialState = {
-  // Current track info
   currentTrack: null,
   currentTrackIndex: -1,
-  
-  // Playback state
   isPlaying: false,
   isPaused: false,
   isLoading: false,
@@ -18,32 +15,20 @@ const initialState = {
   volume: 1,
   isMuted: false,
   previousVolume: 1,
-  
-  // Playlist state
   playlist: [],
   queue: [],
   history: [],
   shuffle: false,
-  repeat: 'none', // 'none', 'track', 'playlist'
-  
-  // Library state
+  repeat: 'none',
   library: [],
   playlists: [],
   currentPlaylist: null,
-  
-  // UI state
   showVisualizer: true,
   showPlaylist: false,
   showLibrary: false,
-  
-  // Audio analysis
   audioData: null,
   frequencyData: new Uint8Array(256),
-  
-  // Error handling
   error: null,
-  
-  // Playback settings
   playbackRate: 1,
   crossfade: false,
   gapless: true,
@@ -58,32 +43,14 @@ const audioReducer = (state, action) => {
         currentTrackIndex: action.payload.index,
         error: null,
       };
-
     case 'SET_PLAYING':
-      return {
-        ...state,
-        isPlaying: action.payload,
-        isPaused: !action.payload,
-      };
-
+      return { ...state, isPlaying: action.payload, isPaused: !action.payload };
     case 'SET_LOADING':
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
-
+      return { ...state, isLoading: action.payload };
     case 'SET_DURATION':
-      return {
-        ...state,
-        duration: action.payload,
-      };
-
+      return { ...state, duration: action.payload };
     case 'SET_CURRENT_TIME':
-      return {
-        ...state,
-        currentTime: action.payload,
-      };
-
+      return { ...state, currentTime: action.payload };
     case 'SET_VOLUME':
       return {
         ...state,
@@ -91,32 +58,21 @@ const audioReducer = (state, action) => {
         isMuted: action.payload === 0,
         previousVolume: action.payload > 0 ? action.payload : state.previousVolume,
       };
-
     case 'TOGGLE_MUTE':
       return {
         ...state,
         isMuted: !state.isMuted,
         volume: !state.isMuted ? 0 : state.previousVolume,
       };
-
     case 'SET_PLAYLIST':
-      return {
-        ...state,
-        playlist: action.payload,
-      };
-
+      return { ...state, playlist: action.payload };
     case 'ADD_TO_PLAYLIST':
-      return {
-        ...state,
-        playlist: [...state.playlist, action.payload],
-      };
-
+      return { ...state, playlist: [...state.playlist, action.payload] };
     case 'REMOVE_FROM_PLAYLIST':
       return {
         ...state,
         playlist: state.playlist.filter((_, index) => index !== action.payload),
       };
-
     case 'CLEAR_PLAYLIST':
       return {
         ...state,
@@ -125,201 +81,104 @@ const audioReducer = (state, action) => {
         currentTrackIndex: -1,
         isPlaying: false,
       };
-
     case 'SET_QUEUE':
-      return {
-        ...state,
-        queue: action.payload,
-      };
-
+      return { ...state, queue: action.payload };
     case 'ADD_TO_QUEUE':
-      return {
-        ...state,
-        queue: [...state.queue, action.payload],
-      };
-
+      return { ...state, queue: [...state.queue, action.payload] };
     case 'REMOVE_FROM_QUEUE':
       return {
         ...state,
         queue: state.queue.filter((_, index) => index !== action.payload),
       };
-
     case 'SET_SHUFFLE':
-      return {
-        ...state,
-        shuffle: action.payload,
-      };
-
+      return { ...state, shuffle: action.payload };
     case 'SET_REPEAT':
-      return {
-        ...state,
-        repeat: action.payload,
-      };
-
+      return { ...state, repeat: action.payload };
     case 'SET_LIBRARY':
-      return {
-        ...state,
-        library: action.payload,
-      };
-
+      return { ...state, library: action.payload };
     case 'ADD_TO_LIBRARY':
-      return {
-        ...state,
-        library: [...state.library, action.payload],
-      };
-
+      return { ...state, library: [...state.library, action.payload] };
     case 'REMOVE_FROM_LIBRARY':
       return {
         ...state,
         library: state.library.filter(track => track.id !== action.payload),
       };
-
     case 'SET_PLAYLISTS':
-      return {
-        ...state,
-        playlists: action.payload,
-      };
-
+      return { ...state, playlists: action.payload };
     case 'ADD_PLAYLIST':
-      return {
-        ...state,
-        playlists: [...state.playlists, action.payload],
-      };
-
+      return { ...state, playlists: [...state.playlists, action.payload] };
     case 'UPDATE_PLAYLIST':
       return {
         ...state,
-        playlists: state.playlists.map(playlist =>
-          playlist.id === action.payload.id ? action.payload : playlist
+        playlists: state.playlists.map(p =>
+          p.id === action.payload.id ? action.payload : p
         ),
       };
-
     case 'DELETE_PLAYLIST':
       return {
         ...state,
-        playlists: state.playlists.filter(playlist => playlist.id !== action.payload),
+        playlists: state.playlists.filter(p => p.id !== action.payload),
       };
-
     case 'SET_CURRENT_PLAYLIST':
-      return {
-        ...state,
-        currentPlaylist: action.payload,
-      };
-
+      return { ...state, currentPlaylist: action.payload };
     case 'TOGGLE_VISUALIZER':
-      return {
-        ...state,
-        showVisualizer: !state.showVisualizer,
-      };
-
+      return { ...state, showVisualizer: !state.showVisualizer };
     case 'TOGGLE_PLAYLIST':
-      return {
-        ...state,
-        showPlaylist: !state.showPlaylist,
-        showLibrary: false,
-      };
-
+      return { ...state, showPlaylist: !state.showPlaylist, showLibrary: false };
     case 'TOGGLE_LIBRARY':
-      return {
-        ...state,
-        showLibrary: !state.showLibrary,
-        showPlaylist: false,
-      };
-
+      return { ...state, showLibrary: !state.showLibrary, showPlaylist: false };
     case 'SET_AUDIO_DATA':
-      return {
-        ...state,
-        audioData: action.payload,
-      };
-
+      return { ...state, audioData: action.payload };
     case 'SET_FREQUENCY_DATA':
-      return {
-        ...state,
-        frequencyData: action.payload,
-      };
-
+      return { ...state, frequencyData: action.payload };
     case 'SET_ERROR':
-      return {
-        ...state,
-        error: action.payload,
-      };
-
+      return { ...state, error: action.payload };
     case 'CLEAR_ERROR':
-      return {
-        ...state,
-        error: null,
-      };
-
+      return { ...state, error: null };
     case 'SET_PLAYBACK_RATE':
-      return {
-        ...state,
-        playbackRate: action.payload,
-      };
-
+      return { ...state, playbackRate: action.payload };
     case 'TOGGLE_CROSSFADE':
-      return {
-        ...state,
-        crossfade: !state.crossfade,
-      };
-
+      return { ...state, crossfade: !state.crossfade };
     case 'TOGGLE_GAPLESS':
-      return {
-        ...state,
-        gapless: !state.gapless,
-      };
-
+      return { ...state, gapless: !state.gapless };
     case 'ADD_TO_HISTORY':
       return {
         ...state,
-        history: [action.payload, ...state.history.slice(0, 49)], // Keep last 50 tracks
+        history: [action.payload, ...state.history.slice(0, 49)],
       };
-
     case 'NEXT_TRACK':
-      const nextIndex = state.shuffle 
+      const nextIndex = state.shuffle
         ? Math.floor(Math.random() * state.playlist.length)
         : (state.currentTrackIndex + 1) % state.playlist.length;
-      
       return {
         ...state,
         currentTrackIndex: nextIndex,
         currentTrack: state.playlist[nextIndex] || null,
-        history: state.currentTrack 
+        history: state.currentTrack
           ? [state.currentTrack, ...state.history.slice(0, 49)]
           : state.history,
       };
-
     case 'PREVIOUS_TRACK':
       let prevIndex;
       if (state.currentTime > 3) {
-        // If more than 3 seconds into track, restart current track
-        return {
-          ...state,
-          currentTime: 0,
-        };
+        return { ...state, currentTime: 0 };
       } else if (state.history.length > 0) {
-        // Go to previous track from history
         const prevTrack = state.history[0];
-        prevIndex = state.playlist.findIndex(track => track.id === prevTrack.id);
+        prevIndex = state.playlist.findIndex(t => t.id === prevTrack.id);
       } else {
-        // Go to previous track in playlist
-        prevIndex = state.currentTrackIndex > 0 
-          ? state.currentTrackIndex - 1 
-          : state.playlist.length - 1;
+        prevIndex =
+          state.currentTrackIndex > 0
+            ? state.currentTrackIndex - 1
+            : state.playlist.length - 1;
       }
-      
       return {
         ...state,
         currentTrackIndex: prevIndex,
         currentTrack: state.playlist[prevIndex] || null,
         history: state.history.slice(1),
       };
-
     case 'SEEK_TO':
-      return {
-        ...state,
-        currentTime: action.payload,
-      };
-
+      return { ...state, currentTime: action.payload };
     case 'RESET_PLAYER':
       return {
         ...initialState,
@@ -328,7 +187,6 @@ const audioReducer = (state, action) => {
         volume: state.volume,
         showVisualizer: state.showVisualizer,
       };
-
     default:
       return state;
   }
@@ -342,7 +200,6 @@ export const AudioProvider = ({ children }) => {
   const sourceRef = useRef(null);
   const gainNodeRef = useRef(null);
 
-  // Initialize Web Audio API
   useEffect(() => {
     if (typeof window !== 'undefined' && !audioContextRef.current) {
       try {
@@ -350,10 +207,8 @@ export const AudioProvider = ({ children }) => {
         audioContextRef.current = new AudioContext();
         analyserRef.current = audioContextRef.current.createAnalyser();
         gainNodeRef.current = audioContextRef.current.createGain();
-        
         analyserRef.current.fftSize = 512;
         analyserRef.current.smoothingTimeConstant = 0.8;
-        
         gainNodeRef.current.connect(audioContextRef.current.destination);
         analyserRef.current.connect(gainNodeRef.current);
       } catch (error) {
@@ -362,7 +217,6 @@ export const AudioProvider = ({ children }) => {
     }
   }, []);
 
-  // Connect audio element to Web Audio API
   useEffect(() => {
     if (audioRef.current && audioContextRef.current && !sourceRef.current) {
       try {
@@ -374,10 +228,8 @@ export const AudioProvider = ({ children }) => {
     }
   }, [state.currentTrack]);
 
-  // Update frequency data for visualizer
   useEffect(() => {
     if (!analyserRef.current) return;
-
     const updateFrequencyData = () => {
       if (state.isPlaying && analyserRef.current) {
         const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
@@ -386,11 +238,9 @@ export const AudioProvider = ({ children }) => {
       }
       requestAnimationFrame(updateFrequencyData);
     };
-
     updateFrequencyData();
   }, [state.isPlaying]);
 
-  // Audio event handlers
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       dispatch({ type: 'SET_DURATION', payload: audioRef.current.duration });
@@ -429,15 +279,12 @@ export const AudioProvider = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: true });
   };
 
-  // Audio control functions
   const play = async () => {
     if (!audioRef.current || !state.currentTrack) return;
-
     try {
       if (audioContextRef.current?.state === 'suspended') {
         await audioContextRef.current.resume();
       }
-      
       await audioRef.current.play();
       dispatch({ type: 'SET_PLAYING', payload: true });
     } catch (error) {
@@ -453,11 +300,7 @@ export const AudioProvider = ({ children }) => {
   };
 
   const togglePlayPause = () => {
-    if (state.isPlaying) {
-      pause();
-    } else {
-      play();
-    }
+    state.isPlaying ? pause() : play();
   };
 
   const nextTrack = () => {
@@ -519,4 +362,40 @@ export const AudioProvider = ({ children }) => {
     const modes = ['none', 'track', 'playlist'];
     const currentIndex = modes.indexOf(state.repeat);
     const nextMode = modes[(currentIndex + 1) % modes.length];
-    dispatch({ type: '
+    dispatch({ type: 'SET_REPEAT', payload: nextMode });
+  };
+
+  return (
+    <AudioContext.Provider
+      value={{
+        state,
+        dispatch,
+        audioRef,
+        play,
+        pause,
+        togglePlayPause,
+        nextTrack,
+        previousTrack,
+        seekTo,
+        setVolume,
+        toggleMute,
+        loadTrack,
+        addToPlaylist,
+        removeFromPlaylist,
+        setPlaylist,
+        toggleShuffle,
+        toggleRepeat,
+        handleLoadedMetadata,
+        handleTimeUpdate,
+        handleEnded,
+        handleError,
+        handleCanPlay,
+        handleWaiting,
+      }}
+    >
+      {children}
+    </AudioContext.Provider>
+  );
+};
+
+export const useAudio = () => useContext(AudioContext);
