@@ -1,0 +1,18 @@
+I cannot generate actual MP3 audio files as they are binary media files that require audio encoding. MP3 files contain compressed audio data that cannot be created through text-based code generation.
+
+To properly set up your glassmorphic MP3 player project, you'll need to:
+
+1. Obtain actual MP3 audio files from:
+   - Free music libraries (Freesound, Zapsplat, etc.)
+   - Creative Commons music sources
+   - Your own recordings
+   - Stock music providers
+
+2. Place the MP3 files in the `public/audio/` directory with names like:
+   - `sample-track-1.mp3`
+   - `sample-track-2.mp3` 
+   - `sample-track-3.mp3`
+
+3. Ensure the audio files are properly formatted and web-optimized
+
+The MP3 files should be referenced in your audio player components and playlist configurations, but they must be actual audio files, not generated code.
