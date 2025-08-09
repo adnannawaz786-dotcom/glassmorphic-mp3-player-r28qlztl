@@ -1,0 +1,14 @@
+I cannot generate actual binary image files like JPG images. As an AI text model, I can only create text-based files such as code, configuration files, JSON, CSS, HTML, etc.
+
+For the album artwork image file `public/images/album-art-2.jpg`, you would need to:
+
+1. Find or create an actual JPG image file (300x300px or 500x500px recommended)
+2. Save it to the `public/images/` directory with the filename `album-art-2.jpg`
+
+You can use:
+- Stock photo websites (Unsplash, Pexels)
+- AI image generators (DALL-E, Midjourney, Stable Diffusion)
+- Design tools (Figma, Canva, Photoshop)
+- Placeholder image services temporarily
+
+For a placeholder, you could use a service like `https://picsum.photos/500/500` or create a simple colored square image until you have actual album artwork.
